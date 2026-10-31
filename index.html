@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#6b1d66" />
+  <title>Public Welfare Trust Araria</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="logo.png.jpeg" type="image/png">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="nav-buttons">
+      <button id="installBtn" class="nav-btn" style="display:none; background: #28a745;">📲 Install App</button>
+      <button id="langToggle" class="nav-btn">🌐 Hindi</button>
+      <button id="darkModeToggle" class="nav-btn">🌙</button>
+      <button id="shareBtn" class="nav-btn">📤 Share</button>
+      <button id="adminBtn" class="nav-btn">🔐 Admin</button>
+    </div>
+  </nav>
+
+  <header class="main-header">
+    <img src="logo.png.jpeg" alt="PWTA Logo" class="top-logo" onerror="this.src='https://via.placeholder.com/100?text=Logo'">
+    <h1 class="trust-name" data-en="PUBLIC WELFARE TRUST ARARIA" data-hi="पब्लिक वेलफेयर ट्रस्ट अररिया">PUBLIC WELFARE TRUST ARARIA</h1>
+    <p class="trust-motto" data-en="Empowering Lives, Building Futures." data-hi="जीवन को सशक्त बनाना, भविष्य का निर्माण करना।">
+      Empowering Lives, Building Futures.
+    </p>
+    <div class="last-update-badge">
+      <span data-en="Last Updated:" data-hi="अंतिम अपडेट:">Last Updated:</span> <span id="lastUpdateTime">Just now</span>
+    </div>
+  </header>
+
+  <section class="notice-section">
+    <h2>📢 <span data-en="Notice Board" data-hi="सूचना पट्ट">Notice Board</span></h2>
+    <div id="noticeList" class="notice-list"></div>
+    <form id="noticeForm" class="admin-only notice-form">
+      <input type="text" id="noticeTitle" placeholder="Notice Title" required>
+      <textarea id="noticeMsg" placeholder="Notice Message..." rows="2" required></textarea>
+      <button type="submit" class="btn-notice">Post Notice</button>
+    </form>
+  </section>
+
+  <section class="blood-section">
+    <h2>🩸 <span data-en="Blood Donor Directory" data-hi="रक्तदाता सूची">Blood Donor Directory</span></h2>
+    <div class="blood-search">
+      <input type="text" id="searchBlood" placeholder="🔍 Search by Name or Blood Group...">
+    </div>
+    <div class="blood-container">
+      <ul id="bloodList" class="blood-list"></ul>
+      <form id="bloodForm" class="admin-only blood-form">
+        <h3>Register as Donor</h3>
+        <input type="text" id="bloodName" placeholder="Donor Name" required>
+        <select id="bloodGroup" required>
+          <option value="">Select Blood Group</option>
+          <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+          <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+        </select>
+        <input type="tel" id="bloodPhone" placeholder="Phone Number" required>
+        <button type="submit" class="btn-blood">Register Donor</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="impact-stats">
+    <div class="stat-box"><h2>500+</h2><p data-en="Students" data-hi="छात्र">Students</p></div>
+    <div class="stat-box"><h2>1000+</h2><p data-en="Meals" data-hi="भोजन">Meals</p></div>
+    <div class="stat-box"><h2>50+</h2><p data-en="Camps" data-hi="शिविर">Camps</p></div>
+  </section>
+
+  <section class="gallery-section">
+    <h2 data-en="Our Activities" data-hi="हमारी गतिविधियाँ">Our Activities</h2>
+    <div class="photo-grid">
+      <img src="photo1.jpg.jpeg" alt="Activity 1" class="gallery-img" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+1'">
+      <img src="photo2.jpg.jpeg" alt="Activity 2" class="gallery-img" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+2'">
+      <img src="photo3.jpg.jpeg" alt="Activity 3" class="gallery-img" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+3'">
+      <img src="photo4.jpg.jpeg" alt="Activity 4" class="gallery-img" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+4'">
+    </div>
+  </section>
+
+  <section class="chart-section">
+    <h2 data-en="Financial Overview" data-hi="वित्तीय अवलोकन">Financial Overview</h2>
+    <div class="chart-container"><canvas id="financeChart"></canvas></div>
+  </section>
+
+  <section class="finance-section">
+    <div class="action-buttons">
+      <button id="downloadPDF" class="btn-action pdf">📄 PDF</button>
+      <button id="downloadCSV" class="btn-action excel">📊 Excel</button>
+      <button id="backupBtn" class="btn-action backup">💾 Backup</button>
+      <label class="btn-action restore">📂 Restore<input type="file" id="restoreFile" accept=".json" style="display:none;"></label>
+    </div>
+
+    <div id="reportArea">
+      <div class="balance-display">
+        <h3><span data-en="Current Balance:" data-hi="वर्तमान शेष राशि:">Current Balance:</span> ₹<span id="balanceAmount">0</span></h3>
+      </div>
+
+      <div class="finance-container">
+        <div class="finance-box revenue-box">
+          <h2 data-en="📈 Revenue" data-hi="📈 आय">📈 Revenue</h2>
+          <form id="revenueForm" class="finance-form admin-only">
+            <input type="text" id="revName" placeholder="Donor Name" required>
+            <input type="date" id="revDate" required>
+            <input type="number" id="revAmount" placeholder="Amount (₹)" required>
+            <input type="file" id="revFile" accept="image/*,application/pdf" required style="font-size: 12px;">
+            <label style="font-size: 11px;"><input type="checkbox" required> Amount matches receipt.</label>
+            <button type="submit" class="btn-rev">Add Revenue</button>
+          </form>
+          <input type="text" id="searchRev" class="search-bar" placeholder="🔍 Search Donor...">
+          <ul id="revenueList" class="record-list"></ul>
+          <div class="total-box"><strong>Total Revenue: ₹<span id="totalRevenue">0</span></strong></div>
+        </div>
+
+        <div class="finance-box expenditure-box">
+          <h2 data-en="📉 Expenditure" data-hi="📉 खर्च">📉 Expenditure</h2>
+          <form id="expenditureForm" class="finance-form admin-only">
+            <input type="text" id="expName" placeholder="Expense Name" required>
+            <select id="expCategory" required><option value="">Category</option><option>Education</option><option>Health</option><option>Food</option><option>Other</option></select>
+            <input type="date" id="expDate" required>
+            <input type="number" id="expAmount" placeholder="Amount (₹)" required>
+            <input type="file" id="expFile" accept="image/*,application/pdf" required style="font-size: 12px;">
+            <label style="font-size: 11px;"><input type="checkbox" required> Amount matches receipt.</label>
+            <button type="submit" class="btn-exp">Add Expense</button>
+          </form>
+          <input type="text" id="searchExp" class="search-bar" placeholder="🔍 Search Expense...">
+          <ul id="expenditureList" class="record-list"></ul>
+          <div class="total-box"><strong>Total Expenditure: ₹<span id="totalExpenditure">0</span></strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="volunteer-section">
+    <h2 data-en="Join as a Volunteer" data-hi="स्वयंसेवक बनें">Join as a Volunteer</h2>
+    <form id="volunteerForm" class="volunteer-form">
+      <input type="text" id="volName" placeholder="Your Name" required>
+      <input type="tel" id="volPhone" placeholder="Phone Number" required>
+      <input type="text" id="volCity" placeholder="City" required>
+      <button type="submit" class="btn-vol">Generate ID Card</button>
+    </form>
+  </section>
+
+  <section class="qr-section">
+    <h2 data-en="Scan to Donate" data-hi="दान के लिए स्कैन करें">Scan to Donate</h2>
+    <img src="qr.png.jpeg" alt="QR Code" class="qr-code" onerror="this.src='https://via.placeholder.com/250?text=Upload+qr.png.jpeg'">
+  </section>
+
+  <footer><p>© 2024 Public Welfare Trust Araria (PWTA).</p></footer>
+
+  <div id="idCardModal" class="modal">
+    <div class="id-card">
+      <div class="id-header">
+        <img src="logo.png.jpeg" alt="Logo" class="id-logo" onerror="this.src='https://via.placeholder.com/50?text=Logo'">
+        <h3>PUBLIC WELFARE TRUST ARARIA</h3>
+        <p>Volunteer ID Card</p>
+      </div>
+      <div class="id-body">
+        <p><strong>Name:</strong> <span id="cardName"></span></p>
+        <p><strong>Phone:</strong> <span id="cardPhone"></span></p>
+        <p><strong>City:</strong> <span id="cardCity"></span></p>
+        <p><strong>ID No:</strong> PWTA-VOL-<span id="cardId"></span></p>
+      </div>
+      <div class="id-footer"><p>Authorized Signatory</p></div>
+    </div>
+    <div style="text-align:center; margin-top: 15px;">
+      <button id="closeCardBtn" class="btn-close-card">Close & Send to WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- 🔥 YAHAN APNA WHATSAPP NUMBER DAALEIN (91 ke sath) 🔥 -->
+  <a href="https://wa.me/919931109967" class="whatsapp-float" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+  </a>
+
+  <script src="script.js"></script>
+</body>
+</html>
