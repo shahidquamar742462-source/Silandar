@@ -1,0 +1,20 @@
+{
+  "name": "Public Welfare Trust Araria",
+  "short_name": "PWTA",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#6b1d66",
+  "theme_color": "#6b1d66",
+  "icons": [
+    {
+      "src": "logo.png.jpeg",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png.jpeg",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
