@@ -1,9 +1,9 @@
 // ==========================================
 // 🔥 YAHAN APNI DETAILS DAALEIN 🔥
 // ==========================================
-const whatsappNumber = "919931109967"; // Aapka WhatsApp Number (Already Added)
-const masterResetCode = "PWTA-RESET-123"; // Admin Password reset karne ka code
-const financialSecurityCode = "pAtwari@123@#++"; // Revenue/Expense ke liye Extra Security Code
+const whatsappNumber = "919931109967"; // Aapka WhatsApp Number
+const masterResetCode = "PWTA-RESET-123"; // Admin Password reset code
+const financialSecurityCode = "pAtwari@123@#++"; // Revenue/Expense Security Code
 
 const firebaseConfig = {
   apiKey: "AIzaSyCNgSH8dvJ7BHL6qmfyJYssvTTl6lo9KjQ",
@@ -51,7 +51,7 @@ const adminBtn = document.getElementById('adminBtn');
 function toggleAdminUI() {
   document.querySelectorAll('.admin-only').forEach(form => form.style.display = isAdmin ? 'flex' : 'none');
   adminBtn.innerText = isAdmin ? "🔓 Logout" : "🔐 Admin";
-  renderRevenues(); renderExpenditures(); renderNotices(); renderDonors(); renderStories(); renderCampaign();
+  renderRevenues(); renderExpenditures(); renderNotices(); renderDonors(); renderStories(); renderCampaign(); renderGallery();
 }
 
 adminBtn.addEventListener('click', () => {
@@ -88,7 +88,7 @@ document.getElementById('shareBtn').addEventListener('click', () => {
 });
 
 // --- DATA VARIABLES ---
-let revenues = [], expenditures = [], notices = [], donors = [], stories = [], campaign = null;
+let revenues = [], expenditures = [], notices = [], donors = [], stories = [], campaign = null, gallery = [];
 
 // --- FIREBASE LISTENERS ---
 db.ref('pwta_data/revenues').on('value', (s) => { revenues = s.val() || []; renderRevenues(); });
@@ -97,6 +97,7 @@ db.ref('pwta_data/notices').on('value', (s) => { notices = s.val() || []; render
 db.ref('pwta_data/donors').on('value', (s) => { donors = s.val() || []; renderDonors(); });
 db.ref('pwta_data/stories').on('value', (s) => { stories = s.val() || []; renderStories(); checkNotifications(); });
 db.ref('pwta_data/campaign').on('value', (s) => { campaign = s.val(); renderCampaign(); });
+db.ref('pwta_data/gallery').on('value', (s) => { gallery = s.val() || []; renderGallery(); });
 db.ref('pwta_last_update').on('value', (s) => { updateLastUpdateTime(s.val()); });
 
 function saveDataToFirebase(type, dataArray) {
@@ -115,6 +116,46 @@ setInterval(() => { db.ref('pwta_last_update').once('value').then(s => updateLas
 
 function readFileAsDataURL(file) {
   return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); });
+}
+
+// --- GALLERY LOGIC (NEW) ---
+const galleryGrid = document.getElementById('galleryGrid');
+function renderGallery() {
+  galleryGrid.innerHTML = '';
+  if(gallery.length === 0) {
+    galleryGrid.innerHTML = '<p style="color:gray; width:100%;">No photos uploaded yet.</p>';
+    return;
+  }
+  
+  gallery.forEach((imgData, index) => {
+    let deleteBtn = isAdmin ? `<button class="gallery-del-btn" onclick="deleteGalleryPhoto(${index})">✕</button>` : '';
+    galleryGrid.innerHTML += `
+      <div class="gallery-item">
+        ${deleteBtn}
+        <img src="${imgData}" class="gallery-img" alt="Activity">
+      </div>
+    `;
+  });
+}
+
+document.getElementById('galleryForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if(!isAdmin) return;
+  const file = document.getElementById('galleryImg').files[0];
+  if(!file) return;
+
+  const fileData = await readFileAsDataURL(file);
+  gallery.push(fileData);
+  saveDataToFirebase('gallery', gallery);
+  e.target.reset();
+  alert("Photo Uploaded Successfully!");
+});
+
+function deleteGalleryPhoto(index) {
+  if(isAdmin && confirm('Delete this photo?')) {
+    gallery.splice(index, 1);
+    saveDataToFirebase('gallery', gallery);
+  }
 }
 
 // --- CAMPAIGN LOGIC ---
@@ -269,7 +310,7 @@ document.getElementById('bloodForm').addEventListener('submit', (e) => {
 });
 function deleteDonor(index) { if(isAdmin && confirm('Remove this donor?')) { donors.splice(index, 1); saveDataToFirebase('donors', donors); } }
 
-// --- FINANCE LOGIC (WITH EXTRA SECURITY CODE) ---
+// --- FINANCE LOGIC ---
 function renderRevenues() {
   const revList = document.getElementById('revenueList');
   revList.innerHTML = ''; let total = 0;
@@ -303,11 +344,9 @@ function renderExpenditures() {
 document.getElementById('searchRev').addEventListener('input', renderRevenues);
 document.getElementById('searchExp').addEventListener('input', renderExpenditures);
 
-// ADD REVENUE (WITH SECURITY CODE)
 document.getElementById('revenueForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   if(!isAdmin) return;
-  
   const secCode = prompt("🔒 Security Check!\nEnter Financial Security Code to Add Revenue:");
   if(secCode !== financialSecurityCode) { alert("❌ Invalid Security Code! Revenue not added."); return; }
 
@@ -316,11 +355,9 @@ document.getElementById('revenueForm').addEventListener('submit', async (e) => {
   saveDataToFirebase('revenues', revenues); e.target.reset(); alert("✅ Revenue Added!");
 });
 
-// ADD EXPENSE (WITH SECURITY CODE)
 document.getElementById('expenditureForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   if(!isAdmin) return;
-  
   const secCode = prompt("🔒 Security Check!\nEnter Financial Security Code to Add Expense:");
   if(secCode !== financialSecurityCode) { alert("❌ Invalid Security Code! Expense not added."); return; }
 
@@ -329,25 +366,19 @@ document.getElementById('expenditureForm').addEventListener('submit', async (e) 
   saveDataToFirebase('expenditures', expenditures); e.target.reset(); alert("✅ Expense Added!");
 });
 
-// DELETE REVENUE (WITH SECURITY CODE)
 function deleteRevenue(index) { 
   if(isAdmin) {
     const secCode = prompt("🔒 Security Check!\nEnter Financial Security Code to DELETE Revenue:");
     if(secCode !== financialSecurityCode) { alert("❌ Invalid Security Code! Not deleted."); return; }
-    if(confirm('Are you sure you want to delete this Revenue entry?')) { 
-      revenues.splice(index, 1); saveDataToFirebase('revenues', revenues); 
-    }
+    if(confirm('Are you sure you want to delete this Revenue entry?')) { revenues.splice(index, 1); saveDataToFirebase('revenues', revenues); }
   } 
 }
 
-// DELETE EXPENSE (WITH SECURITY CODE)
 function deleteExpenditure(index) { 
   if(isAdmin) {
     const secCode = prompt("🔒 Security Check!\nEnter Financial Security Code to DELETE Expense:");
     if(secCode !== financialSecurityCode) { alert("❌ Invalid Security Code! Not deleted."); return; }
-    if(confirm('Are you sure you want to delete this Expense entry?')) { 
-      expenditures.splice(index, 1); saveDataToFirebase('expenditures', expenditures); 
-    }
+    if(confirm('Are you sure you want to delete this Expense entry?')) { expenditures.splice(index, 1); saveDataToFirebase('expenditures', expenditures); }
   } 
 }
 
@@ -389,14 +420,25 @@ document.getElementById('downloadCSV').addEventListener('click', () => {
   a.href = URL.createObjectURL(blob); a.download = 'PWTA_Data.csv'; a.click();
 });
 
+// 🔥 PDF FIX: List ko expand karta hai taaki saara data PDF mein aaye 🔥
 document.getElementById('downloadPDF').addEventListener('click', () => {
   const element = document.getElementById('reportArea');
+  
+  // Temporarily remove scroll limits
+  const lists = element.querySelectorAll('.record-list');
+  lists.forEach(list => { list.style.maxHeight = 'none'; list.style.overflowY = 'visible'; });
+
   const opt = { margin: 0.5, filename: 'PWTA_Report.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
-  alert("Generating PDF..."); html2pdf().set(opt).from(element).save();
+  
+  alert("Generating PDF... Please wait.");
+  html2pdf().set(opt).from(element).save().then(() => {
+    // Restore scroll limits after PDF generation
+    lists.forEach(list => { list.style.maxHeight = '250px'; list.style.overflowY = 'auto'; });
+  });
 });
 
 document.getElementById('backupBtn').addEventListener('click', () => {
-  const data = { revenues, expenditures, notices, donors, stories, campaign };
+  const data = { revenues, expenditures, notices, donors, stories, campaign, gallery };
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'PWTA_Backup.json'; a.click();
 });
@@ -410,7 +452,7 @@ document.getElementById('restoreFile').addEventListener('change', (e) => {
       if (data.revenues) { 
         saveDataToFirebase('revenues', data.revenues); saveDataToFirebase('expenditures', data.expenditures);
         saveDataToFirebase('notices', data.notices || []); saveDataToFirebase('donors', data.donors || []);
-        saveDataToFirebase('stories', data.stories || []);
+        saveDataToFirebase('stories', data.stories || []); saveDataToFirebase('gallery', data.gallery || []);
         if(data.campaign) db.ref('pwta_data/campaign').set(data.campaign);
         alert("Data Restored!"); 
       }
