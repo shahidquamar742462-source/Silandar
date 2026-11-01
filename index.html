@@ -20,6 +20,7 @@
   <nav class="top-nav">
     <div class="nav-buttons">
       <button id="installBtn" class="nav-btn" style="display:none; background: #28a745;">📲 Install App</button>
+      <button id="notifBtn" class="nav-btn" style="position:relative;">🔔 <span id="notifBadge" style="display:none; position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; padding:2px 6px; font-size:10px;">!</span></button>
       <button id="langToggle" class="nav-btn">🌐 Hindi</button>
       <button id="darkModeToggle" class="nav-btn">🌙</button>
       <button id="shareBtn" class="nav-btn">📤 Share</button>
@@ -30,13 +31,24 @@
   <header class="main-header">
     <img src="logo.png.jpeg" alt="PWTA Logo" class="top-logo" onerror="this.src='https://via.placeholder.com/100?text=Logo'">
     <h1 class="trust-name" data-en="PUBLIC WELFARE TRUST ARARIA" data-hi="पब्लिक वेलफेयर ट्रस्ट अररिया">PUBLIC WELFARE TRUST ARARIA</h1>
-    <p class="trust-motto" data-en="Empowering Lives, Building Futures." data-hi="जीवन को सशक्त बनाना, भविष्य का निर्माण करना।">
-      Empowering Lives, Building Futures.
-    </p>
+    <p class="trust-motto" data-en="Empowering Lives, Building Futures." data-hi="जीवन को सशक्त बनाना, भविष्य का निर्माण करना।">Empowering Lives, Building Futures.</p>
     <div class="last-update-badge">
       <span data-en="Last Updated:" data-hi="अंतिम अपडेट:">Last Updated:</span> <span id="lastUpdateTime">Just now</span>
     </div>
   </header>
+
+  <!-- CAMPAIGN GOAL SECTION -->
+  <section class="campaign-section">
+    <h2>🎯 <span data-en="Current Campaign" data-hi="वर्तमान अभियान">Current Campaign</span></h2>
+    <div id="campaignDisplay" class="campaign-box">
+      <p style="text-align:center; color:gray;">No active campaign right now.</p>
+    </div>
+    <form id="campaignForm" class="admin-only campaign-form">
+      <input type="text" id="campName" placeholder="Campaign Name (e.g. Health Camp)" required>
+      <input type="number" id="campTarget" placeholder="Target Amount (₹)" required>
+      <button type="submit" class="btn-camp">Set Campaign</button>
+    </form>
+  </section>
 
   <section class="notice-section">
     <h2>📢 <span data-en="Notice Board" data-hi="सूचना पट्ट">Notice Board</span></h2>
@@ -45,6 +57,18 @@
       <input type="text" id="noticeTitle" placeholder="Notice Title" required>
       <textarea id="noticeMsg" placeholder="Notice Message..." rows="2" required></textarea>
       <button type="submit" class="btn-notice">Post Notice</button>
+    </form>
+  </section>
+
+  <!-- SUCCESS STORIES SECTION -->
+  <section class="stories-section">
+    <h2>📖 <span data-en="Success Stories" data-hi="सफलता की कहानियां">Success Stories</span></h2>
+    <div id="storiesList" class="stories-list"></div>
+    <form id="storiesForm" class="admin-only stories-form">
+      <input type="text" id="storyTitle" placeholder="Story Title" required>
+      <textarea id="storyDesc" placeholder="Story Description..." rows="3" required></textarea>
+      <input type="file" id="storyImg" accept="image/*" style="font-size: 12px;">
+      <button type="submit" class="btn-story">Add Story</button>
     </form>
   </section>
 
@@ -175,7 +199,16 @@
     </div>
   </div>
 
-  <!-- 🔥 YAHAN APNA WHATSAPP NUMBER DAALEIN (91 ke sath) 🔥 -->
+  <!-- NOTIFICATION MODAL -->
+  <div id="notifModal" class="modal">
+    <div class="modal-content notif-content">
+      <h3 style="color: var(--primary); margin-bottom: 15px;">🔔 Recent Updates</h3>
+      <div id="notifList"></div>
+      <button id="closeNotifBtn" class="btn-close-card" style="margin-top: 15px; background: var(--primary);">Close</button>
+    </div>
+  </div>
+
+  <!-- YAHAN AAPKA NUMBER UPDATE HO CHUKA HAI -->
   <a href="https://wa.me/919931109967" class="whatsapp-float" target="_blank">
     <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
   </a>
