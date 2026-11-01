@@ -29,6 +29,19 @@ body { background-color: var(--bg); color: var(--text); line-height: 1.6; transi
 .trust-motto { font-size: 14px; font-style: italic; color: #f0e6f0; margin-bottom: 15px; }
 .last-update-badge { background: #222; display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 12px; color: var(--yellow); font-weight: bold; }
 
+/* CAMPAIGN */
+.campaign-section { max-width: 900px; margin: 20px auto; padding: 0 20px; }
+.campaign-section h2 { color: var(--primary); margin-bottom: 10px; text-align: center; }
+.campaign-box { background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.campaign-title { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px; font-size: 18px; }
+.progress-bar-bg { background: #ddd; border-radius: 10px; height: 25px; overflow: hidden; margin-bottom: 10px; }
+.progress-bar-fill { background: var(--secondary); height: 100%; text-align: center; color: white; font-weight: bold; line-height: 25px; transition: width 0.5s; }
+.campaign-stats { display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 10px; }
+.campaign-form { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+.campaign-form input { padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); }
+.btn-camp { background: var(--secondary); color: white; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+/* NOTICE BOARD */
 .notice-section { max-width: 900px; margin: 20px auto; padding: 0 20px; }
 .notice-section h2 { color: var(--primary); margin-bottom: 10px; text-align: center; }
 .notice-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
@@ -40,6 +53,20 @@ body { background-color: var(--bg); color: var(--text); line-height: 1.6; transi
 .notice-form input, .notice-form textarea { padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); }
 .btn-notice { background: #e53935; color: white; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
+/* SUCCESS STORIES */
+.stories-section { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+.stories-section h2 { color: var(--primary); margin-bottom: 15px; text-align: center; }
+.stories-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px; }
+.story-card { background: var(--card-bg); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.story-img { width: 100%; height: 150px; object-fit: cover; }
+.story-content { padding: 15px; }
+.story-content h4 { color: var(--primary); margin-bottom: 5px; }
+.story-content p { font-size: 13px; }
+.stories-form { display: flex; flex-direction: column; gap: 10px; background: var(--card-bg); padding: 15px; border-radius: 8px; }
+.stories-form input, .stories-form textarea { padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); }
+.btn-story { background: var(--primary); color: white; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+/* BLOOD DONOR */
 .blood-section { max-width: 900px; margin: 30px auto; padding: 0 20px; }
 .blood-section h2 { color: #e53935; margin-bottom: 15px; text-align: center; }
 .blood-search input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 20px; margin-bottom: 15px; background: var(--card-bg); color: var(--text); }
@@ -52,17 +79,16 @@ body { background-color: var(--bg); color: var(--text); line-height: 1.6; transi
 .blood-form input, .blood-form select { padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); }
 .btn-blood { background: #e53935; color: white; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
+/* OTHERS */
 .impact-stats { display: flex; justify-content: center; gap: 15px; margin: 20px auto; padding: 0 20px; flex-wrap: wrap; }
 .stat-box { background: var(--card-bg); padding: 15px; border-radius: 10px; text-align: center; flex: 1; min-width: 100px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-top: 4px solid var(--secondary); }
 .stat-box h2 { color: var(--primary); font-size: 24px; }
 .chart-section { max-width: 800px; margin: 30px auto; padding: 20px; background: var(--card-bg); border-radius: 12px; text-align: center; }
 .chart-container { width: 100%; max-width: 300px; margin: 0 auto; }
-
 .gallery-section { max-width: 1000px; margin: 30px auto; padding: 0 20px; text-align: center; }
 .gallery-section h2 { color: var(--primary); margin-bottom: 15px; }
 .photo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
 .gallery-img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border: 3px solid var(--card-bg); }
-
 .finance-section { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
 .action-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
 .btn-action { padding: 10px 15px; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: bold; font-size: 13px; }
@@ -81,12 +107,10 @@ body { background-color: var(--bg); color: var(--text); line-height: 1.6; transi
 .receipt-link { color: var(--accent); cursor: pointer; text-decoration: underline; }
 .delete-btn { background: none; border: none; color: #e53935; cursor: pointer; font-size: 14px; font-weight: bold; }
 .total-box { text-align: right; border-top: 1px dashed var(--border); padding-top: 10px; font-weight: bold; }
-
 .volunteer-section { max-width: 500px; margin: 40px auto; padding: 20px; background: var(--card-bg); border-radius: 12px; text-align: center; }
 .volunteer-form { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
 .volunteer-form input { padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); }
 .btn-vol { background: var(--accent); color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-
 .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); overflow-y: auto; }
 .id-card { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; width: 90%; max-width: 350px; margin: 10% auto; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; border: 4px solid var(--yellow); }
 .id-header { text-align: center; padding: 20px 10px; background: rgba(0,0,0,0.2); border-bottom: 2px solid rgba(255,255,255,0.3); }
@@ -97,10 +121,9 @@ body { background-color: var(--bg); color: var(--text); line-height: 1.6; transi
 .id-body strong { color: var(--yellow); }
 .id-footer { text-align: right; padding: 10px 20px; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.3); font-style: italic; }
 .btn-close-card { background: var(--secondary); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
-
 .qr-section { text-align: center; padding: 30px; background: var(--card-bg); }
 .qr-code { width: 200px; border-radius: 10px; border: 3px solid var(--primary); }
 footer { background: #222; color: white; text-align: center; padding: 15px; font-size: 13px; }
-
 .whatsapp-float { position: fixed; width: 55px; height: 55px; bottom: 20px; right: 20px; background-color: #25d366; border-radius: 50px; text-align: center; box-shadow: 2px 2px 10px rgba(0,0,0,0.3); z-index: 100; }
 .whatsapp-float img { width: 30px; margin-top: 12px; }
+.notif-content { background: var(--card-bg); margin: 15% auto; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; max-height: 70vh; overflow-y: auto; }
