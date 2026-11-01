@@ -118,7 +118,7 @@ function readFileAsDataURL(file) {
   return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); });
 }
 
-// --- GALLERY LOGIC (NEW) ---
+// --- GALLERY LOGIC ---
 const galleryGrid = document.getElementById('galleryGrid');
 function renderGallery() {
   galleryGrid.innerHTML = '';
@@ -420,21 +420,86 @@ document.getElementById('downloadCSV').addEventListener('click', () => {
   a.href = URL.createObjectURL(blob); a.download = 'PWTA_Data.csv'; a.click();
 });
 
-// 🔥 PDF FIX: List ko expand karta hai taaki saara data PDF mein aaye 🔥
+// 🔥 PDF FIX: Table format with PATWARI WELFARE TRUST ARARIA Header 🔥
 document.getElementById('downloadPDF').addEventListener('click', () => {
-  const element = document.getElementById('reportArea');
+  let pdfHtml = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; color: #000; background: #fff;">
+      <h1 style="text-align: center; color: #6b1d66; margin-bottom: 5px; font-weight: 900; text-transform: uppercase;">PATWARI WELFARE TRUST ARARIA</h1>
+      <h3 style="text-align: center; margin-top: 0; color: #333;">Financial Report (Revenue & Expenditure)</h3>
+      <p style="text-align: center; font-size: 12px; color: #555; margin-bottom: 20px;">Generated on: ${new Date().toLocaleString()}</p>
+      
+      <h3 style="color: #8cc63f; margin-top: 20px; border-bottom: 2px solid #8cc63f; padding-bottom: 5px;">📈 Revenue (Donations)</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;" border="1">
+        <tr style="background: #8cc63f; color: #fff;">
+          <th style="padding: 10px; text-align: left;">Date</th>
+          <th style="padding: 10px; text-align: left;">Donor Name</th>
+          <th style="padding: 10px; text-align: right;">Amount (₹)</th>
+        </tr>
+  `;
   
-  // Temporarily remove scroll limits
-  const lists = element.querySelectorAll('.record-list');
-  lists.forEach(list => { list.style.maxHeight = 'none'; list.style.overflowY = 'visible'; });
-
-  const opt = { margin: 0.5, filename: 'PWTA_Report.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
-  
-  alert("Generating PDF... Please wait.");
-  html2pdf().set(opt).from(element).save().then(() => {
-    // Restore scroll limits after PDF generation
-    lists.forEach(list => { list.style.maxHeight = '250px'; list.style.overflowY = 'auto'; });
+  let totalRev = 0;
+  revenues.forEach(r => {
+    totalRev += Number(r.amount);
+    pdfHtml += `
+      <tr>
+        <td style="padding: 8px;">${r.date}</td>
+        <td style="padding: 8px;">${r.name}</td>
+        <td style="padding: 8px; text-align: right;">₹${r.amount}</td>
+      </tr>`;
   });
+  pdfHtml += `
+        <tr style="background: #f0fdf4;">
+          <td colspan="2" style="padding: 10px; text-align: right; font-weight: bold;">Total Revenue:</td>
+          <td style="padding: 10px; text-align: right; font-weight: bold; color: #8cc63f;">₹${totalRev}</td>
+        </tr>
+      </table>
+
+      <h3 style="color: #e53935; margin-top: 30px; border-bottom: 2px solid #e53935; padding-bottom: 5px;">📉 Expenditure</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;" border="1">
+        <tr style="background: #e53935; color: #fff;">
+          <th style="padding: 10px; text-align: left;">Date</th>
+          <th style="padding: 10px; text-align: left;">Expense Name</th>
+          <th style="padding: 10px; text-align: left;">Category</th>
+          <th style="padding: 10px; text-align: right;">Amount (₹)</th>
+        </tr>
+  `;
+  
+  let totalExp = 0;
+  expenditures.forEach(e => {
+    totalExp += Number(e.amount);
+    pdfHtml += `
+      <tr>
+        <td style="padding: 8px;">${e.date}</td>
+        <td style="padding: 8px;">${e.name}</td>
+        <td style="padding: 8px;">${e.category}</td>
+        <td style="padding: 8px; text-align: right;">₹${e.amount}</td>
+      </tr>`;
+  });
+  pdfHtml += `
+        <tr style="background: #fef2f2;">
+          <td colspan="3" style="padding: 10px; text-align: right; font-weight: bold;">Total Expenditure:</td>
+          <td style="padding: 10px; text-align: right; font-weight: bold; color: #e53935;">₹${totalExp}</td>
+        </tr>
+      </table>
+      
+      <div style="margin-top: 40px; padding: 15px; background: #f4f4f9; border: 2px solid #6b1d66; border-radius: 8px;">
+        <h3 style="text-align: right; color: ${totalRev - totalExp < 0 ? '#e53935' : '#6b1d66'}; margin: 0;">
+          Current Balance: ₹${totalRev - totalExp}
+        </h3>
+      </div>
+    </div>
+  `;
+
+  const opt = {
+    margin:       0.5,
+    filename:     'PWTA_Financial_Report.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2 },
+    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+  };
+
+  alert("Generating PDF... Please wait.");
+  html2pdf().set(opt).from(pdfHtml).save();
 });
 
 document.getElementById('backupBtn').addEventListener('click', () => {
