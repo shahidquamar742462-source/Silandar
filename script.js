@@ -420,7 +420,7 @@ document.getElementById('downloadCSV').addEventListener('click', () => {
   a.href = URL.createObjectURL(blob); a.download = 'PWTA_Data.csv'; a.click();
 });
 
-// 🔥 100% WORKING REAL PDF GENERATOR (Khata Book Style) 🔥
+// 🔥 100% WORKING REAL PDF GENERATOR WITH RECEIPT COLUMN 🔥
 document.getElementById('downloadPDF').addEventListener('click', () => {
   if (!window.jspdf) {
     alert("PDF library load nahi hui. Kripya internet check karein.");
@@ -445,18 +445,26 @@ document.getElementById('downloadPDF').addEventListener('click', () => {
   doc.setFont("helvetica", "bold");
   doc.text("REVENUE", 15, 40);
 
-  const revBody = revenues.map(r => [r.date, r.name, `Rs. ${r.amount}`]);
+  // Prepare Data with Receipt Column
+  const revBody = revenues.map(r => {
+    let receiptCell = "-";
+    if(r.fileData) {
+      receiptCell = { content: 'View', styles: { textColor: [0, 0, 255], fontStyle: 'underline' }, url: r.fileData };
+    }
+    return [r.date, r.name, `Rs. ${r.amount}`, receiptCell];
+  });
+  
   let totalRev = revenues.reduce((sum, r) => sum + Number(r.amount), 0);
-  revBody.push(["", "Total Revenue", `Rs. ${totalRev}`]);
+  revBody.push(["", "Total Revenue", `Rs. ${totalRev}`, ""]);
 
   doc.autoTable({
     startY: 45,
-    head: [['Date', 'Name', 'Amount']],
+    head: [['Date', 'Name', 'Amount', 'Receipt']],
     body: revBody,
     theme: 'grid',
     headStyles: { fillColor: [140, 198, 63] },
-    styles: { fontSize: 10 },
-    columnStyles: { 2: { halign: 'right' } },
+    styles: { fontSize: 9 },
+    columnStyles: { 2: { halign: 'right' }, 3: { halign: 'center' } },
     margin: { left: 15, right: 155 } // Left side fix
   });
 
@@ -466,18 +474,26 @@ document.getElementById('downloadPDF').addEventListener('click', () => {
   doc.setFont("helvetica", "bold");
   doc.text("EXPENSES", 155, 40);
 
-  const expBody = expenditures.map(e => [e.date, e.name, e.category, `Rs. ${e.amount}`]);
+  // Prepare Data with Receipt Column
+  const expBody = expenditures.map(e => {
+    let receiptCell = "-";
+    if(e.fileData) {
+      receiptCell = { content: 'View', styles: { textColor: [0, 0, 255], fontStyle: 'underline' }, url: e.fileData };
+    }
+    return [e.date, e.name, e.category, `Rs. ${e.amount}`, receiptCell];
+  });
+  
   let totalExp = expenditures.reduce((sum, e) => sum + Number(e.amount), 0);
-  expBody.push(["", "Total Expenses", "", `Rs. ${totalExp}`]);
+  expBody.push(["", "Total Expenses", "", `Rs. ${totalExp}`, ""]);
 
   doc.autoTable({
     startY: 45,
-    head: [['Date', 'Name', 'Category', 'Amount']],
+    head: [['Date', 'Name', 'Category', 'Amount', 'Receipt']],
     body: expBody,
     theme: 'grid',
     headStyles: { fillColor: [229, 57, 53] },
-    styles: { fontSize: 10 },
-    columnStyles: { 3: { halign: 'right' } },
+    styles: { fontSize: 8 }, // Chota font taaki sab fit ho jaye
+    columnStyles: { 3: { halign: 'right' }, 4: { halign: 'center' } },
     margin: { left: 155, right: 15 } // Right side fix
   });
 
