@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwta-app-v9'; 
+const CACHE_NAME = 'pwta-app-v10'; 
 const ASSETS = [
   './',
   './index.html',
