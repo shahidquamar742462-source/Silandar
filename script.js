@@ -420,9 +420,9 @@ document.getElementById('downloadCSV').addEventListener('click', () => {
   a.href = URL.createObjectURL(blob); a.download = 'PWTA_Data.csv'; a.click();
 });
 
-// 🔥 PDF FIX: Native Print System for 100% Reliable PDF on Mobile 🔥
+// 🔥 100% WORKING PDF GENERATOR (Blob URL Method) 🔥
 document.getElementById('downloadPDF').addEventListener('click', () => {
-  // 1. Create the HTML structure with Table
+  // 1. Create HTML Structure
   let pdfHtml = `
     <html>
     <head>
@@ -525,28 +525,22 @@ document.getElementById('downloadPDF').addEventListener('click', () => {
     </html>
   `;
 
-  // 2. Create a hidden iframe to render the report without disturbing the main screen
-  const iframe = document.createElement('iframe');
-  iframe.style.position = 'absolute';
-  iframe.style.width = '0px';
-  iframe.style.height = '0px';
-  iframe.style.border = 'none';
-  document.body.appendChild(iframe);
-
-  const doc = iframe.contentWindow.document;
-  doc.open();
-  doc.write(pdfHtml);
-  doc.close();
-
-  // 3. Trigger Native Print (Phone will show 'Save as PDF' option)
-  iframe.onload = () => {
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
-    // Clean up iframe after print dialog is closed
-    setTimeout(() => {
-      document.body.removeChild(iframe);
-    }, 10000); 
-  };
+  // 2. Blob URL Method (Sabse reliable for mobile printing)
+  const blob = new Blob([pdfHtml], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  
+  // 3. Open new window and trigger Print
+  const printWindow = window.open(url, '_blank');
+  
+  if (printWindow) {
+    printWindow.onload = function() {
+      setTimeout(() => {
+        printWindow.print();
+      }, 500); // 500ms delay taaki content load ho jaye
+    };
+  } else {
+    alert("Please allow pop-ups to generate PDF.");
+  }
 });
 
 document.getElementById('backupBtn').addEventListener('click', () => {
