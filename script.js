@@ -420,162 +420,112 @@ document.getElementById('downloadCSV').addEventListener('click', () => {
   a.href = URL.createObjectURL(blob); a.download = 'PWTA_Data.csv'; a.click();
 });
 
-// 🔥 100% WORKING PDF GENERATOR (Blob URL Method) 🔥
+// 🔥 100% NATIVE PRINT METHOD (Bina naya tab khole, direct print popup) 🔥
 document.getElementById('downloadPDF').addEventListener('click', () => {
-  // 1. Create HTML Structure
-  let pdfHtml = `
-    <html>
-    <head>
-      <title>PWTA Financial Report</title>
-      <style>
-        body { font-family: Arial, sans-serif; padding: 20px; color: #000; background: #fff; }
-        h1 { text-align: center; color: #6b1d66; margin-bottom: 5px; font-weight: 900; text-transform: uppercase; font-size: 24px; }
-        h3 { text-align: center; margin-top: 0; color: #333; font-size: 16px; font-weight: normal; }
-        .meta { text-align: center; font-size: 12px; color: #555; margin-bottom: 30px; }
-        .section-title { font-size: 18px; margin-top: 20px; border-bottom: 2px solid; padding-bottom: 5px; margin-bottom: 15px; }
-        .rev-title { color: #8cc63f; border-color: #8cc63f; }
-        .exp-title { color: #e53935; border-color: #e53935; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
-        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
-        th { color: #fff; }
-        .rev-th { background: #8cc63f; }
-        .exp-th { background: #e53935; }
-        .total-row { background: #f4f4f9; font-weight: bold; }
-        .text-right { text-align: right; }
-        .text-center { text-align: center; }
-        .balance-box { margin-top: 40px; padding: 15px; background: #f4f4f9; border: 2px solid #6b1d66; border-radius: 8px; text-align: right; }
-        .balance-box h3 { margin: 0; font-weight: bold; font-size: 20px; }
-      </style>
-    </head>
-    <body>
-      <h1>PATWARI WELFARE TRUST ARARIA</h1>
-      <h3>Financial Report (Revenue & Expenditure)</h3>
-      <p class="meta">Generated on: ${new Date().toLocaleString()}</p>
-      
-      <h3 class="section-title rev-title">📈 Revenue (Donations)</h3>
-      <table>
-        <tr>
-          <th class="rev-th">Date</th>
-          <th class="rev-th">Donor Name</th>
-          <th class="rev-th text-right">Amount (₹)</th>
-        </tr>
+  // 1. Create the HTML structure with Table
+  let reportHtml = `
+    <h1 style="text-align: center; color: #6b1d66; margin-bottom: 5px; font-weight: 900; text-transform: uppercase; font-size: 24px;">PATWARI WELFARE TRUST ARARIA</h1>
+    <h3 style="text-align: center; margin-top: 0; color: #333; font-size: 16px; font-weight: normal;">Financial Report (Revenue & Expenditure)</h3>
+    <p style="text-align: center; font-size: 12px; color: #555; margin-bottom: 30px;">Generated on: ${new Date().toLocaleString()}</p>
+    
+    <h3 style="color: #8cc63f; border-bottom: 2px solid #8cc63f; padding-bottom: 5px; margin-bottom: 15px;">📈 Revenue (Donations)</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;">
+      <tr style="background: #8cc63f; color: #fff;">
+        <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Date</th>
+        <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Donor Name</th>
+        <th style="border: 1px solid #ccc; padding: 10px; text-align: right;">Amount (₹)</th>
+      </tr>
   `;
   
   let totalRev = 0;
   if(revenues.length === 0) {
-    pdfHtml += `<tr><td colspan="3" class="text-center">No Revenue Data</td></tr>`;
+    reportHtml += `<tr><td colspan="3" style="border: 1px solid #ccc; padding: 10px; text-align: center;">No Revenue Data</td></tr>`;
   } else {
     revenues.forEach(r => {
       totalRev += Number(r.amount);
-      pdfHtml += `
+      reportHtml += `
         <tr>
-          <td>${r.date}</td>
-          <td>${r.name}</td>
-          <td class="text-right">₹${r.amount}</td>
+          <td style="border: 1px solid #ccc; padding: 10px;">${r.date}</td>
+          <td style="border: 1px solid #ccc; padding: 10px;">${r.name}</td>
+          <td style="border: 1px solid #ccc; padding: 10px; text-align: right;">₹${r.amount}</td>
         </tr>`;
     });
   }
   
-  pdfHtml += `
-        <tr class="total-row">
-          <td colspan="2" class="text-right">Total Revenue:</td>
-          <td class="text-right" style="color: #8cc63f;">₹${totalRev}</td>
-        </tr>
-      </table>
+  reportHtml += `
+      <tr style="background: #f4f4f9; font-weight: bold;">
+        <td colspan="2" style="border: 1px solid #ccc; padding: 10px; text-align: right;">Total Revenue:</td>
+        <td style="border: 1px solid #ccc; padding: 10px; text-align: right; color: #8cc63f;">₹${totalRev}</td>
+      </tr>
+    </table>
 
-      <h3 class="section-title exp-title">📉 Expenditure</h3>
-      <table>
-        <tr>
-          <th class="exp-th">Date</th>
-          <th class="exp-th">Expense Name</th>
-          <th class="exp-th">Category</th>
-          <th class="exp-th text-right">Amount (₹)</th>
-        </tr>
+    <h3 style="color: #e53935; border-bottom: 2px solid #e53935; padding-bottom: 5px; margin-bottom: 15px; margin-top: 30px;">📉 Expenditure</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;">
+      <tr style="background: #e53935; color: #fff;">
+        <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Date</th>
+        <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Expense Name</th>
+        <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Category</th>
+        <th style="border: 1px solid #ccc; padding: 10px; text-align: right;">Amount (₹)</th>
+      </tr>
   `;
   
   let totalExp = 0;
   if(expenditures.length === 0) {
-    pdfHtml += `<tr><td colspan="4" class="text-center">No Expenditure Data</td></tr>`;
+    reportHtml += `<tr><td colspan="4" style="border: 1px solid #ccc; padding: 10px; text-align: center;">No Expenditure Data</td></tr>`;
   } else {
     expenditures.forEach(e => {
       totalExp += Number(e.amount);
-      pdfHtml += `
+      reportHtml += `
         <tr>
-          <td>${e.date}</td>
-          <td>${e.name}</td>
-          <td>${e.category}</td>
-          <td class="text-right">₹${e.amount}</td>
+          <td style="border: 1px solid #ccc; padding: 10px;">${e.date}</td>
+          <td style="border: 1px solid #ccc; padding: 10px;">${e.name}</td>
+          <td style="border: 1px solid #ccc; padding: 10px;">${e.category}</td>
+          <td style="border: 1px solid #ccc; padding: 10px; text-align: right;">₹${e.amount}</td>
         </tr>`;
     });
   }
   
-  pdfHtml += `
-        <tr class="total-row">
-          <td colspan="3" class="text-right">Total Expenditure:</td>
-          <td class="text-right" style="color: #e53935;">₹${totalExp}</td>
-        </tr>
-      </table>
-      
-      <div class="balance-box">
-        <h3 style="color: ${totalRev - totalExp < 0 ? '#e53935' : '#6b1d66'}">
-          Current Balance: ₹${totalRev - totalExp}
-        </h3>
-      </div>
-    </body>
-    </html>
+  reportHtml += `
+      <tr style="background: #f4f4f9; font-weight: bold;">
+        <td colspan="3" style="border: 1px solid #ccc; padding: 10px; text-align: right;">Total Expenditure:</td>
+        <td style="border: 1px solid #ccc; padding: 10px; text-align: right; color: #e53935;">₹${totalExp}</td>
+      </tr>
+    </table>
+    
+    <div style="margin-top: 40px; padding: 15px; background: #f4f4f9; border: 2px solid #6b1d66; border-radius: 8px; text-align: right;">
+      <h3 style="margin: 0; font-weight: bold; font-size: 20px; color: ${totalRev - totalExp < 0 ? '#e53935' : '#6b1d66'}">
+        Current Balance: ₹${totalRev - totalExp}
+      </h3>
+    </div>
   `;
 
-  // 2. Blob URL Method (Sabse reliable for mobile printing)
-  const blob = new Blob([pdfHtml], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  
-  // 3. Open new window and trigger Print
-  const printWindow = window.open(url, '_blank');
-  
-  if (printWindow) {
-    printWindow.onload = function() {
-      setTimeout(() => {
-        printWindow.print();
-      }, 500); // 500ms delay taaki content load ho jaye
-    };
-  } else {
-    alert("Please allow pop-ups to generate PDF.");
+  // 2. Create a hidden container for the report in the current page
+  let printSection = document.getElementById('print-section');
+  if (!printSection) {
+    printSection = document.createElement('div');
+    printSection.id = 'print-section';
+    document.body.appendChild(printSection);
   }
-});
+  printSection.innerHTML = reportHtml;
 
-document.getElementById('backupBtn').addEventListener('click', () => {
-  const data = { revenues, expenditures, notices, donors, stories, campaign, gallery };
-  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'PWTA_Backup.json'; a.click();
-});
-
-document.getElementById('restoreFile').addEventListener('change', (e) => {
-  const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    try {
-      const data = JSON.parse(event.target.result);
-      if (data.revenues) { 
-        saveDataToFirebase('revenues', data.revenues); saveDataToFirebase('expenditures', data.expenditures);
-        saveDataToFirebase('notices', data.notices || []); saveDataToFirebase('donors', data.donors || []);
-        saveDataToFirebase('stories', data.stories || []); saveDataToFirebase('gallery', data.gallery || []);
-        if(data.campaign) db.ref('pwta_data/campaign').set(data.campaign);
-        alert("Data Restored!"); 
+  // 3. Add CSS specifically for printing (Hide everything except print-section)
+  let style = document.getElementById('print-style');
+  if (!style) {
+    style = document.createElement('style');
+    style.id = 'print-style';
+    style.innerHTML = `
+      @media print {
+        body * { visibility: hidden; }
+        #print-section, #print-section * { visibility: visible; }
+        #print-section { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
+        @page { size: A4 portrait; margin: 10mm; }
       }
-    } catch (err) { alert("Invalid File!"); }
-  };
-  reader.readAsText(file);
+    `;
+    document.head.appendChild(style);
+  }
+
+  // 4. Trigger Print
+  setTimeout(() => {
+    window.print();
+  }, 300);
 });
-
-toggleAdminUI();
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js').then((reg) => {
-    reg.onupdatefound = () => {
-      const installingWorker = reg.installing;
-      installingWorker.onstatechange = () => {
-        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) { window.location.reload(); }
-      }
-    };
-  });
-}
