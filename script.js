@@ -420,112 +420,143 @@ document.getElementById('downloadCSV').addEventListener('click', () => {
   a.href = URL.createObjectURL(blob); a.download = 'PWTA_Data.csv'; a.click();
 });
 
-// 🔥 100% NATIVE PRINT METHOD (Bina naya tab khole, direct print popup) 🔥
+// 🔥 100% WORKING PDF (Side-by-Side Table Format) 🔥
 document.getElementById('downloadPDF').addEventListener('click', () => {
-  // 1. Create the HTML structure with Table
-  let reportHtml = `
-    <h1 style="text-align: center; color: #6b1d66; margin-bottom: 5px; font-weight: 900; text-transform: uppercase; font-size: 24px;">PATWARI WELFARE TRUST ARARIA</h1>
-    <h3 style="text-align: center; margin-top: 0; color: #333; font-size: 16px; font-weight: normal;">Financial Report (Revenue & Expenditure)</h3>
-    <p style="text-align: center; font-size: 12px; color: #555; margin-bottom: 30px;">Generated on: ${new Date().toLocaleString()}</p>
-    
-    <h3 style="color: #8cc63f; border-bottom: 2px solid #8cc63f; padding-bottom: 5px; margin-bottom: 15px;">📈 Revenue (Donations)</h3>
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;">
-      <tr style="background: #8cc63f; color: #fff;">
-        <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Date</th>
-        <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Donor Name</th>
-        <th style="border: 1px solid #ccc; padding: 10px; text-align: right;">Amount (₹)</th>
-      </tr>
-  `;
-  
   let totalRev = 0;
-  if(revenues.length === 0) {
-    reportHtml += `<tr><td colspan="3" style="border: 1px solid #ccc; padding: 10px; text-align: center;">No Revenue Data</td></tr>`;
-  } else {
-    revenues.forEach(r => {
-      totalRev += Number(r.amount);
-      reportHtml += `
-        <tr>
-          <td style="border: 1px solid #ccc; padding: 10px;">${r.date}</td>
-          <td style="border: 1px solid #ccc; padding: 10px;">${r.name}</td>
-          <td style="border: 1px solid #ccc; padding: 10px; text-align: right;">₹${r.amount}</td>
-        </tr>`;
-    });
-  }
-  
-  reportHtml += `
-      <tr style="background: #f4f4f9; font-weight: bold;">
-        <td colspan="2" style="border: 1px solid #ccc; padding: 10px; text-align: right;">Total Revenue:</td>
-        <td style="border: 1px solid #ccc; padding: 10px; text-align: right; color: #8cc63f;">₹${totalRev}</td>
-      </tr>
-    </table>
+  let revRows = '';
+  revenues.forEach(r => {
+    totalRev += Number(r.amount);
+    revRows += `
+      <tr>
+        <td style="border: 1px solid #000; padding: 6px; font-size: 12px;">${r.date}</td>
+        <td style="border: 1px solid #000; padding: 6px; font-size: 12px;">${r.name}</td>
+        <td style="border: 1px solid #000; padding: 6px; font-size: 12px; text-align: right;">₹${r.amount}</td>
+      </tr>`;
+  });
+  if(revenues.length === 0) revRows = `<tr><td colspan="3" style="text-align:center; padding:10px;">No Data</td></tr>`;
 
-    <h3 style="color: #e53935; border-bottom: 2px solid #e53935; padding-bottom: 5px; margin-bottom: 15px; margin-top: 30px;">📉 Expenditure</h3>
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;">
-      <tr style="background: #e53935; color: #fff;">
-        <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Date</th>
-        <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Expense Name</th>
-        <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Category</th>
-        <th style="border: 1px solid #ccc; padding: 10px; text-align: right;">Amount (₹)</th>
-      </tr>
-  `;
-  
   let totalExp = 0;
-  if(expenditures.length === 0) {
-    reportHtml += `<tr><td colspan="4" style="border: 1px solid #ccc; padding: 10px; text-align: center;">No Expenditure Data</td></tr>`;
-  } else {
-    expenditures.forEach(e => {
-      totalExp += Number(e.amount);
-      reportHtml += `
+  let expRows = '';
+  expenditures.forEach(e => {
+    totalExp += Number(e.amount);
+    expRows += `
+      <tr>
+        <td style="border: 1px solid #000; padding: 6px; font-size: 12px;">${e.date}</td>
+        <td style="border: 1px solid #000; padding: 6px; font-size: 12px;">${e.name}</td>
+        <td style="border: 1px solid #000; padding: 6px; font-size: 12px;">${e.category}</td>
+        <td style="border: 1px solid #000; padding: 6px; font-size: 12px; text-align: right;">₹${e.amount}</td>
+      </tr>`;
+  });
+  if(expenditures.length === 0) expRows = `<tr><td colspan="4" style="text-align:center; padding:10px;">No Data</td></tr>`;
+
+  let reportHtml = `
+    <div style="font-family: Arial, sans-serif; background: #fff; width: 1000px; padding: 20px;">
+      <h1 style="text-align: center; color: #000; font-weight: 900; text-transform: uppercase; font-size: 26px; margin-bottom: 20px;">PATWARI WELFARE TRUST ARARIA</h1>
+      
+      <table style="width: 100%; border-collapse: collapse; border: none;">
         <tr>
-          <td style="border: 1px solid #ccc; padding: 10px;">${e.date}</td>
-          <td style="border: 1px solid #ccc; padding: 10px;">${e.name}</td>
-          <td style="border: 1px solid #ccc; padding: 10px;">${e.category}</td>
-          <td style="border: 1px solid #ccc; padding: 10px; text-align: right;">₹${e.amount}</td>
-        </tr>`;
-    });
-  }
-  
-  reportHtml += `
-      <tr style="background: #f4f4f9; font-weight: bold;">
-        <td colspan="3" style="border: 1px solid #ccc; padding: 10px; text-align: right;">Total Expenditure:</td>
-        <td style="border: 1px solid #ccc; padding: 10px; text-align: right; color: #e53935;">₹${totalExp}</td>
-      </tr>
-    </table>
-    
-    <div style="margin-top: 40px; padding: 15px; background: #f4f4f9; border: 2px solid #6b1d66; border-radius: 8px; text-align: right;">
-      <h3 style="margin: 0; font-weight: bold; font-size: 20px; color: ${totalRev - totalExp < 0 ? '#e53935' : '#6b1d66'}">
-        Current Balance: ₹${totalRev - totalExp}
-      </h3>
+          <!-- REVENUE SIDE -->
+          <td style="width: 48%; vertical-align: top; padding-right: 2%;">
+            <h3 style="background: #8cc63f; color: #fff; padding: 8px; text-align: center; margin: 0; border: 1px solid #000;">REVENUE</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr style="background: #f0f0f0;">
+                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Date</th>
+                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Name</th>
+                <th style="border: 1px solid #000; padding: 6px; text-align: right;">Amount</th>
+              </tr>
+              ${revRows}
+              <tr style="background: #f0f0f0; font-weight: bold;">
+                <td colspan="2" style="border: 1px solid #000; padding: 8px; text-align: right;">Total Revenue:</td>
+                <td style="border: 1px solid #000; padding: 8px; text-align: right; color: #8cc63f;">₹${totalRev}</td>
+              </tr>
+            </table>
+          </td>
+          
+          <!-- EXPENSE SIDE -->
+          <td style="width: 48%; vertical-align: top; padding-left: 2%;">
+            <h3 style="background: #e53935; color: #fff; padding: 8px; text-align: center; margin: 0; border: 1px solid #000;">EXPENSES</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr style="background: #f0f0f0;">
+                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Date</th>
+                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Name</th>
+                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Category</th>
+                <th style="border: 1px solid #000; padding: 6px; text-align: right;">Amount</th>
+              </tr>
+              ${expRows}
+              <tr style="background: #f0f0f0; font-weight: bold;">
+                <td colspan="3" style="border: 1px solid #000; padding: 8px; text-align: right;">Total Expenses:</td>
+                <td style="border: 1px solid #000; padding: 8px; text-align: right; color: #e53935;">₹${totalExp}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
     </div>
   `;
 
-  // 2. Create a hidden container for the report in the current page
-  let printSection = document.getElementById('print-section');
-  if (!printSection) {
-    printSection = document.createElement('div');
-    printSection.id = 'print-section';
-    document.body.appendChild(printSection);
-  }
-  printSection.innerHTML = reportHtml;
+  // Create hidden container to render the PDF
+  const element = document.createElement('div');
+  element.innerHTML = reportHtml;
+  // Keep it off-screen but visible for the renderer
+  element.style.position = 'absolute';
+  element.style.left = '-9999px';
+  element.style.top = '0';
+  document.body.appendChild(element);
 
-  // 3. Add CSS specifically for printing (Hide everything except print-section)
-  let style = document.getElementById('print-style');
-  if (!style) {
-    style = document.createElement('style');
-    style.id = 'print-style';
-    style.innerHTML = `
-      @media print {
-        body * { visibility: hidden; }
-        #print-section, #print-section * { visibility: visible; }
-        #print-section { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
-        @page { size: A4 portrait; margin: 10mm; }
-      }
-    `;
-    document.head.appendChild(style);
-  }
+  // PDF settings (Landscape for side-by-side)
+  const opt = {
+    margin:       0.3,
+    filename:     'PWTA_Financial_Report.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 1000 },
+    jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+  };
 
-  // 4. Trigger Print
-  setTimeout(() => {
-    window.print();
-  }, 300);
+  alert("Generating PDF... Please wait.");
+  
+  // Generate and download
+  html2pdf().set(opt).from(element).save().then(() => {
+    // Cleanup
+    document.body.removeChild(element);
+  }).catch(err => {
+    alert("PDF generation failed. Please try again.");
+    document.body.removeChild(element);
+  });
 });
+
+document.getElementById('backupBtn').addEventListener('click', () => {
+  const data = { revenues, expenditures, notices, donors, stories, campaign, gallery };
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'PWTA_Backup.json'; a.click();
+});
+
+document.getElementById('restoreFile').addEventListener('change', (e) => {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const data = JSON.parse(event.target.result);
+      if (data.revenues) { 
+        saveDataToFirebase('revenues', data.revenues); saveDataToFirebase('expenditures', data.expenditures);
+        saveDataToFirebase('notices', data.notices || []); saveDataToFirebase('donors', data.donors || []);
+        saveDataToFirebase('stories', data.stories || []); saveDataToFirebase('gallery', data.gallery || []);
+        if(data.campaign) db.ref('pwta_data/campaign').set(data.campaign);
+        alert("Data Restored!"); 
+      }
+    } catch (err) { alert("Invalid File!"); }
+  };
+  reader.readAsText(file);
+});
+
+toggleAdminUI();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').then((reg) => {
+    reg.onupdatefound = () => {
+      const installingWorker = reg.installing;
+      installingWorker.onstatechange = () => {
+        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) { window.location.reload(); }
+      }
+    };
+  });
+}
