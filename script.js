@@ -433,7 +433,7 @@ document.getElementById('downloadPDF').addEventListener('click', () => {
   // 1. Header Title
   doc.setFontSize(22);
   doc.setFont("helvetica", "bold");
-  doc.text("PATWARI WELFARE TRUST ARARIA", 148.5, 20, { align: "center" });
+  doc.text("PUBLIC WELFARE TRUST ARARIA", 148.5, 20, { align: "center" });
 
   doc.setFontSize(14);
   doc.setFont("helvetica", "normal");
