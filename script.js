@@ -420,91 +420,69 @@ document.getElementById('downloadCSV').addEventListener('click', () => {
   a.href = URL.createObjectURL(blob); a.download = 'PWTA_Data.csv'; a.click();
 });
 
-// 🔥 NATIVE PRINT (Perfect Blank-Free Method) 🔥
+// 🔥 100% WORKING REAL PDF GENERATOR (Khata Book Style) 🔥
 document.getElementById('downloadPDF').addEventListener('click', () => {
-  let totalRev = 0;
-  let revRows = '';
-  revenues.forEach(r => {
-    totalRev += Number(r.amount);
-    revRows += `
-      <tr>
-        <td style="border: 1px solid #000; padding: 6px; font-size: 12px;">${r.date}</td>
-        <td style="border: 1px solid #000; padding: 6px; font-size: 12px;">${r.name}</td>
-        <td style="border: 1px solid #000; padding: 6px; font-size: 12px; text-align: right;">₹${r.amount}</td>
-      </tr>`;
+  if (!window.jspdf) {
+    alert("PDF library load nahi hui. Kripya internet check karein.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('l', 'mm', 'a4'); // 'l' for Landscape
+
+  // 1. Header Title
+  doc.setFontSize(22);
+  doc.setFont("helvetica", "bold");
+  doc.text("PATWARI WELFARE TRUST ARARIA", 148.5, 20, { align: "center" });
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
+  doc.text("Financial Report (Revenue & Expenditure)", 148.5, 28, { align: "center" });
+
+  // 2. REVENUE TABLE (Left Side)
+  doc.setFontSize(14);
+  doc.setTextColor(140, 198, 63); // Green Color
+  doc.setFont("helvetica", "bold");
+  doc.text("REVENUE", 15, 40);
+
+  const revBody = revenues.map(r => [r.date, r.name, `Rs. ${r.amount}`]);
+  let totalRev = revenues.reduce((sum, r) => sum + Number(r.amount), 0);
+  revBody.push(["", "Total Revenue", `Rs. ${totalRev}`]);
+
+  doc.autoTable({
+    startY: 45,
+    head: [['Date', 'Name', 'Amount']],
+    body: revBody,
+    theme: 'grid',
+    headStyles: { fillColor: [140, 198, 63] },
+    styles: { fontSize: 10 },
+    columnStyles: { 2: { halign: 'right' } },
+    margin: { left: 15, right: 155 } // Left side fix
   });
-  if(revenues.length === 0) revRows = `<tr><td colspan="3" style="text-align:center; padding:10px;">No Data</td></tr>`;
 
-  let totalExp = 0;
-  let expRows = '';
-  expenditures.forEach(e => {
-    totalExp += Number(e.amount);
-    expRows += `
-      <tr>
-        <td style="border: 1px solid #000; padding: 6px; font-size: 12px;">${e.date}</td>
-        <td style="border: 1px solid #000; padding: 6px; font-size: 12px;">${e.name}</td>
-        <td style="border: 1px solid #000; padding: 6px; font-size: 12px;">${e.category}</td>
-        <td style="border: 1px solid #000; padding: 6px; font-size: 12px; text-align: right;">₹${e.amount}</td>
-      </tr>`;
+  // 3. EXPENSES TABLE (Right Side)
+  doc.setFontSize(14);
+  doc.setTextColor(229, 57, 53); // Red Color
+  doc.setFont("helvetica", "bold");
+  doc.text("EXPENSES", 155, 40);
+
+  const expBody = expenditures.map(e => [e.date, e.name, e.category, `Rs. ${e.amount}`]);
+  let totalExp = expenditures.reduce((sum, e) => sum + Number(e.amount), 0);
+  expBody.push(["", "Total Expenses", "", `Rs. ${totalExp}`]);
+
+  doc.autoTable({
+    startY: 45,
+    head: [['Date', 'Name', 'Category', 'Amount']],
+    body: expBody,
+    theme: 'grid',
+    headStyles: { fillColor: [229, 57, 53] },
+    styles: { fontSize: 10 },
+    columnStyles: { 3: { halign: 'right' } },
+    margin: { left: 155, right: 15 } // Right side fix
   });
-  if(expenditures.length === 0) expRows = `<tr><td colspan="4" style="text-align:center; padding:10px;">No Data</td></tr>`;
 
-  let reportHtml = `
-    <div style="font-family: Arial, sans-serif; background: #fff; width: 100%; padding: 10px;">
-      <h1 style="text-align: center; color: #000; font-weight: 900; text-transform: uppercase; font-size: 26px; margin-bottom: 20px;">PATWARI WELFARE TRUST ARARIA</h1>
-      
-      <table style="width: 100%; border-collapse: collapse; border: none;">
-        <tr>
-          <!-- REVENUE SIDE -->
-          <td style="width: 48%; vertical-align: top; padding-right: 2%;">
-            <h3 style="background: #8cc63f; color: #fff; padding: 8px; text-align: center; margin: 0; border: 1px solid #000;">REVENUE</h3>
-            <table style="width: 100%; border-collapse: collapse;">
-              <tr style="background: #f0f0f0;">
-                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Date</th>
-                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Name</th>
-                <th style="border: 1px solid #000; padding: 6px; text-align: right;">Amount</th>
-              </tr>
-              ${revRows}
-              <tr style="background: #f0f0f0; font-weight: bold;">
-                <td colspan="2" style="border: 1px solid #000; padding: 8px; text-align: right;">Total Revenue:</td>
-                <td style="border: 1px solid #000; padding: 8px; text-align: right; color: #8cc63f;">₹${totalRev}</td>
-              </tr>
-            </table>
-          </td>
-          
-          <!-- EXPENSE SIDE -->
-          <td style="width: 48%; vertical-align: top; padding-left: 2%;">
-            <h3 style="background: #e53935; color: #fff; padding: 8px; text-align: center; margin: 0; border: 1px solid #000;">EXPENSES</h3>
-            <table style="width: 100%; border-collapse: collapse;">
-              <tr style="background: #f0f0f0;">
-                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Date</th>
-                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Name</th>
-                <th style="border: 1px solid #000; padding: 6px; text-align: left;">Category</th>
-                <th style="border: 1px solid #000; padding: 6px; text-align: right;">Amount</th>
-              </tr>
-              ${expRows}
-              <tr style="background: #f0f0f0; font-weight: bold;">
-                <td colspan="3" style="border: 1px solid #000; padding: 8px; text-align: right;">Total Expenses:</td>
-                <td style="border: 1px solid #000; padding: 8px; text-align: right; color: #e53935;">₹${totalExp}</td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </div>
-  `;
-
-  // Fill hidden container
-  document.getElementById('print-container').innerHTML = reportHtml;
-
-  // Trigger Native Print
-  setTimeout(() => {
-    window.print();
-    // Cleanup after print
-    setTimeout(() => {
-      document.getElementById('print-container').innerHTML = '';
-    }, 2000);
-  }, 300);
+  // 4. PDF Download Karna
+  doc.save('PWTA_Financial_Report.pdf');
 });
 
 document.getElementById('backupBtn').addEventListener('click', () => {
