@@ -9,9 +9,7 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="logo.png.jpeg" type="image/png">
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 </head>
@@ -97,14 +95,9 @@
     <div class="stat-box"><h2>50+</h2><p data-en="Camps" data-hi="शिविर">Camps</p></div>
   </section>
 
-  <!-- GALLERY SECTION (UPDATED) -->
   <section class="gallery-section">
     <h2 data-en="Our Activities" data-hi="हमारी गतिविधियाँ">Our Activities</h2>
-    <div class="photo-grid" id="galleryGrid">
-      <!-- Photos will load here dynamically -->
-    </div>
-    
-    <!-- ADMIN GALLERY UPLOAD -->
+    <div class="photo-grid" id="galleryGrid"></div>
     <form id="galleryForm" class="admin-only gallery-form">
       <input type="file" id="galleryImg" accept="image/*" required style="font-size: 14px;">
       <button type="submit" class="btn-gallery">Upload Photo</button>
@@ -212,6 +205,9 @@
   <a href="https://wa.me/919931109967" class="whatsapp-float" target="_blank">
     <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
   </a>
+
+  <!-- 🔥 YAHAN PRINT KE LIYE NAYA DIV ADD KIYA HAI 🔥 -->
+  <div id="print-container" style="display: none;"></div>
 
   <script src="script.js"></script>
 </body>
