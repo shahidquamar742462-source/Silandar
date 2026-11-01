@@ -37,7 +37,6 @@
     </div>
   </header>
 
-  <!-- CAMPAIGN GOAL SECTION -->
   <section class="campaign-section">
     <h2>🎯 <span data-en="Current Campaign" data-hi="वर्तमान अभियान">Current Campaign</span></h2>
     <div id="campaignDisplay" class="campaign-box">
@@ -60,7 +59,6 @@
     </form>
   </section>
 
-  <!-- SUCCESS STORIES SECTION -->
   <section class="stories-section">
     <h2>📖 <span data-en="Success Stories" data-hi="सफलता की कहानियां">Success Stories</span></h2>
     <div id="storiesList" class="stories-list"></div>
@@ -99,14 +97,18 @@
     <div class="stat-box"><h2>50+</h2><p data-en="Camps" data-hi="शिविर">Camps</p></div>
   </section>
 
+  <!-- GALLERY SECTION (UPDATED) -->
   <section class="gallery-section">
     <h2 data-en="Our Activities" data-hi="हमारी गतिविधियाँ">Our Activities</h2>
-    <div class="photo-grid">
-      <img src="photo1.jpg.jpeg" alt="Activity 1" class="gallery-img" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+1'">
-      <img src="photo2.jpg.jpeg" alt="Activity 2" class="gallery-img" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+2'">
-      <img src="photo3.jpg.jpeg" alt="Activity 3" class="gallery-img" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+3'">
-      <img src="photo4.jpg.jpeg" alt="Activity 4" class="gallery-img" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+4'">
+    <div class="photo-grid" id="galleryGrid">
+      <!-- Photos will load here dynamically -->
     </div>
+    
+    <!-- ADMIN GALLERY UPLOAD -->
+    <form id="galleryForm" class="admin-only gallery-form">
+      <input type="file" id="galleryImg" accept="image/*" required style="font-size: 14px;">
+      <button type="submit" class="btn-gallery">Upload Photo</button>
+    </form>
   </section>
 
   <section class="chart-section">
@@ -199,7 +201,6 @@
     </div>
   </div>
 
-  <!-- NOTIFICATION MODAL -->
   <div id="notifModal" class="modal">
     <div class="modal-content notif-content">
       <h3 style="color: var(--primary); margin-bottom: 15px;">🔔 Recent Updates</h3>
@@ -208,7 +209,6 @@
     </div>
   </div>
 
-  <!-- YAHAN AAPKA NUMBER UPDATE HO CHUKA HAI -->
   <a href="https://wa.me/919931109967" class="whatsapp-float" target="_blank">
     <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
   </a>
