@@ -34,7 +34,7 @@ langToggle.addEventListener('click', () => {
   currentLang = currentLang === 'en' ? 'hi' : 'en';
   langToggle.innerText = currentLang === 'en' ? '🌐 Hindi' : '🌐 English';
   document.querySelectorAll('[data-en]').forEach(el => {
-    el.innerText = el.getAttribute(`data-${currentLang}`);
+    el.innerHTML = el.getAttribute(`data-${currentLang}`);
   });
 });
 
