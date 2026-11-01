@@ -420,7 +420,7 @@ document.getElementById('downloadCSV').addEventListener('click', () => {
   a.href = URL.createObjectURL(blob); a.download = 'PWTA_Data.csv'; a.click();
 });
 
-// 🔥 100% WORKING PDF (Side-by-Side Table Format) 🔥
+// 🔥 NATIVE PRINT (Perfect Blank-Free Method) 🔥
 document.getElementById('downloadPDF').addEventListener('click', () => {
   let totalRev = 0;
   let revRows = '';
@@ -450,7 +450,7 @@ document.getElementById('downloadPDF').addEventListener('click', () => {
   if(expenditures.length === 0) expRows = `<tr><td colspan="4" style="text-align:center; padding:10px;">No Data</td></tr>`;
 
   let reportHtml = `
-    <div style="font-family: Arial, sans-serif; background: #fff; width: 1000px; padding: 20px;">
+    <div style="font-family: Arial, sans-serif; background: #fff; width: 100%; padding: 10px;">
       <h1 style="text-align: center; color: #000; font-weight: 900; text-transform: uppercase; font-size: 26px; margin-bottom: 20px;">PATWARI WELFARE TRUST ARARIA</h1>
       
       <table style="width: 100%; border-collapse: collapse; border: none;">
@@ -494,34 +494,17 @@ document.getElementById('downloadPDF').addEventListener('click', () => {
     </div>
   `;
 
-  // Create hidden container to render the PDF
-  const element = document.createElement('div');
-  element.innerHTML = reportHtml;
-  // Keep it off-screen but visible for the renderer
-  element.style.position = 'absolute';
-  element.style.left = '-9999px';
-  element.style.top = '0';
-  document.body.appendChild(element);
+  // Fill hidden container
+  document.getElementById('print-container').innerHTML = reportHtml;
 
-  // PDF settings (Landscape for side-by-side)
-  const opt = {
-    margin:       0.3,
-    filename:     'PWTA_Financial_Report.pdf',
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 1000 },
-    jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
-  };
-
-  alert("Generating PDF... Please wait.");
-  
-  // Generate and download
-  html2pdf().set(opt).from(element).save().then(() => {
-    // Cleanup
-    document.body.removeChild(element);
-  }).catch(err => {
-    alert("PDF generation failed. Please try again.");
-    document.body.removeChild(element);
-  });
+  // Trigger Native Print
+  setTimeout(() => {
+    window.print();
+    // Cleanup after print
+    setTimeout(() => {
+      document.getElementById('print-container').innerHTML = '';
+    }, 2000);
+  }, 300);
 });
 
 document.getElementById('backupBtn').addEventListener('click', () => {
